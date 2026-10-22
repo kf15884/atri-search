@@ -1,6 +1,6 @@
 {
   "name": "koishi-plugin-atri-search",
-  "version": "0.2.0-beta.1",
+  "version": "0.2.1-beta.1",
   "description": "Atri子项目：第二台浏览器优先、API兜底，正式剧情提交后异步执行，保留HDS数据。",
   "main": "index.js",
   "license": "MIT",
@@ -16,9 +16,7 @@
   "files": [
     "*.js",
     "README.md",
-    "LICENSE",
-    "docs",
-    "scripts"
+    "LICENSE"
   ],
   "koishi": {
     "description": {

@@ -1,16 +1,24 @@
-# Atri 浏览器工具 0.2.0-beta.1
+# atri-search 0.2.1-beta.1
 
-Atri子项目 / [HDS-Interlude](https://github.com/ISEKAI-MomoiCore/HDS-Interlude)的非官方扩展。
+Atri子项目，配合[HDS-Interlude](https://github.com/ISEKAI-MomoiCore/HDS-Interlude)的人设、故事、记忆和原生投递；不是HDS官方，不另建人格。
 
-- `main/`：原atri-search实例升级，HDS提交后异步协调、主机API兜底、最近20条查询词、人设追加确认工具。
-- `main/dist/`：可安装tgz。
-- `node2/`：第二台Playwright + Chromium服务；实际在Bing网页填写/提交/读取DOM，不用API冒充浏览器。
-- `main/docs/CONSOLE.md`：人设精简文本、Console修改点、当前故事更新与功能接入告知。
-- `main/docs/DEPLOY.md`：两端部署、备份、验收和回退。
-- `main/docs/QA.md`：本地测试与未验收边界。
+## 本次更新
 
-用户已确认两端部署及整体验收完成；各备用/故障分支未提供单独最终回执。发布为可选Beta，不代表HDS官方或npm市场发布。见RELEASE-NOTES.md。
+新增暂停、主叙事和原生待发分段让位，保留HDS已有网页证据；第二台浏览器服务不变，不需要重新部署。56项分别在旧固定rc57及重建rc57通过。
 
-首版HDS只提出搜索任务；第二台已具有受限公开页面read操作接口，为后续阅读扩展准备。账号登录、点击任意控件、表单提交、脚本执行、下载、上传、发帖/私信都未开放。API兜底仅适用于公开搜索，不泛化到未来账号写入。
+## 安装与安全边界
 
-配置均留空/填写提示。无个人账号、服务器IP、真实Token/Key、Cookie、人设全文、参考图或生产数据。运行源码MIT；HDS核心AGPL-3.0及其他依赖许可不变，本包不再分发HDS核心或Chromium二进制。
+这是可选Pre-release，保留原默认分支、稳定版本和旧Release，不执行npm发布。独立tgz供有经验的维护者使用；推荐从[Bili本次Release](https://github.com/kf15884/atri-bili-plugins/releases/tag/v0.8.4-beta.1)下载完整`Atri_Pipeline_Optimization_Beta_2.zip`，按包内README及统一安装器操作。不要从本仓库抽取统一安装器单独运行，它依赖完整六个运行包和数据校验脚本。
+
+- 只操作主服务器，第二台服务不更新。默认五个Atri插件，可选HDS官方源码重建包；后者不是上游官方发布，保留AGPL-3.0和对应源码。Atri插件自身沿用MIT。
+- 照片库albumUrl需显式填写；Bili启用framesEnabled时framesUrl需显式填写；不要依赖旧版个人地址默认值。Token/Cookie沿用私有配置，不贴到聊天。
+- 日记selfRecallRedecide建议关闭，recallBudget建议3200；已有显式true不会自动覆盖。
+- 保留原插件实例，不清库、不重建故事、不清除overlay/人设演化，不重复追加功能开通人设。安装前停服备份及一致性校验；失败回退依赖，不用旧数据库覆盖新聊天。
+- 用户已提供整合包安装成功与启动前数据一致性回执；Console加载、真实QQ投递、完整照片与睡眠周期仍待验收。不要为了公开发布重复安装。
+- 模型、B站、QQ与搜索返回采用测试替身；本地通过不等于生产联网验收。共享协调与组合12项、五种升级/回退模拟通过，详见VALIDATION.md及JSON报告。
+
+## 源码测试
+
+依赖Koishi4.18.11/SQLite4.7.0/HTTP0.6.3及已授权固定HDS rc57运行包。rc57并非公共npm可直接安装的版本；不要用npm latest替代或宣称远程CI已通过。真实HDS集成测试需本地具备对应依赖，可用`ATRI_HDS_MODULE`指定固定运行文件（具体测试入口以源码为准）。Bili新增协调测试在独立源码树使用qa下逐字节相同的协调器副本，仅调整测试导入路径，不改变运行tgz。
+
+源码ZIP、运行tgz与SHA256SUMS见本Release。公开包不含生产数据、账号、Key、Token、Cookie、参考图或私有备份；已知个人地址清理，合成测试夹具不代表用户账号。

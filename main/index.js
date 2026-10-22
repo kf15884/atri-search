@@ -28,7 +28,7 @@ function apply(ctx, c) {
       case 'pause': engine.pause(); return '搜索已暂停，旧任务已取消';
       case 'resume': engine.resume(); return '已恢复；不会重放旧任务。未开启或缺少搜索Key时仍不会检索';
       case 'clear': engine.clear(); return '已清空搜索历史及临时结果；额度和去重保护保留';
-      default: return h.escape(`Atri浏览器 0.2.0-beta.1\n${engine.status}${engine.jobs.at(-1)?.traces?.length ? '\n线路记录：' + engine.jobs.at(-1).traces.map(x => x.stage+':'+x.code).join(' → ') : ''}\n开关：${c.enabled ? '开' : '关'}；私有暂停：${store.state.paused ? '是' : '否'}；浏览器：${c.browserUrl && c.browserToken ? '已配置（未证明可用）' : '未配置'}；API兜底：${engine.provider.fallbackConfigured() ? c.fallbackType : '未配置'}\n最近查询${store.history.length}/20；不独立调用主叙事模型、不直接推送QQ；浏览器失败才切API，两者失败为未获取信息\n${help}`);
+      default: return h.escape(`Atri浏览器 0.2.1-beta.1\n${engine.status}${engine.jobs.at(-1)?.traces?.length ? '\n线路记录：' + engine.jobs.at(-1).traces.map(x => x.stage+':'+x.code).join(' → ') : ''}\n开关：${c.enabled ? '开' : '关'}；私有暂停：${store.state.paused ? '是' : '否'}；浏览器：${c.browserUrl && c.browserToken ? '已配置（未证明可用）' : '未配置'}；API兜底：${engine.provider.fallbackConfigured() ? c.fallbackType : '未配置'}\n最近查询${store.history.length}/20；不独立调用主叙事模型、不直接推送QQ；浏览器失败才切API，两者失败为未获取信息\n${help}`);
     }
   }, true);
 }

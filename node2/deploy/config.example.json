@@ -1,9 +1,0 @@
-{
-  "listenAddress": "请填写第二台WireGuard地址",
-  "port": 8103,
-  "token": "请在服务器本地生成至少32字符的独立随机Token",
-  "dataDir": "/var/lib/atri-browser",
-  "chromiumPath": "/usr/bin/chromium",
-  "maxTextCharacters": 6000,
-  "blockedTerms": []
-}

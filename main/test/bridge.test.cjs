@@ -45,3 +45,6 @@ test('in-flight search does not delay foreground narrator; no extra narrator/mod
  assert.ok(result.script);assert.equal(modelCalls,2,'exactly one narrator call per requested turn');assert.equal(f.observed().webContext.length,0,'pending result not invented');
  resolve([]);await work;
 });
+test('plugin never truncates native HDS web evidence while limiting its own additions',async t=>{
+ const f=bridge(t),native=Array.from({length:12},(_,i)=>({id:i+1,title:'原有观察'+i}));await f.narrator().decide({...f.req,webContext:native});assert.equal(f.observed().webContext.length,12);assert.deepEqual(f.observed().webContext,native);assert.equal(native.length,12);
+});

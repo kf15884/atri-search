@@ -1,5 +1,6 @@
 'use strict';
 const L = require('./logic');
+const { canStart } = require('./background');
 class Engine {
   constructor(c, store, provider, { now = Date.now } = {}) {
     Object.assign(this, { c, store, provider, now });
@@ -50,7 +51,7 @@ class Engine {
         if (t - (j.completedAt || j.at) > ttl || !await this.valid(j)) this.cancel(j, '旧任务已失效');
       }
       const j = this.jobs.find(j => j.status === 'queued');
-      if (!j || !this.budget() || this.service.hasPendingNarrative(j.storyId)) return;
+      if (!j || !this.budget() || !await canStart(this.service, j.storyId)) return;
       j.controller = new AbortController(); j.status = 'running'; this.status = '后台检索中';
       let timer, onAbort;
       try {
@@ -59,7 +60,7 @@ class Engine {
         const reserve = () => { if (!j.charged) { if (!this.budget()) throw Object.assign(new Error('cancelled'), { code: 'cancelled' }); this.store.reserve(this.now(), L.day(this.now(), this.c.timezone)); j.charged = true; } };
         const request = this.provider.search(j.query, { taskId: j.key, signal: j.controller.signal, onDispatch: reserve, beforeSubmit: async () => {
           if (!await this.valid(j)) throw Object.assign(new Error('cancelled'), { code: 'cancelled' });
-          while (this.service.hasPendingNarrative(j.storyId)) { await new Promise(r => setTimeout(r, 100)); if (j.controller.signal.aborted || !await this.valid(j)) throw Object.assign(new Error('cancelled'), { code: 'cancelled' }); }
+          while (!await canStart(this.service, j.storyId)) { await new Promise(r => setTimeout(r, 100)); if (j.controller.signal.aborted || !await this.valid(j)) throw Object.assign(new Error('cancelled'), { code: 'cancelled' }); }
         }, onSubmit: (attemptId) => {
           if (!this.current(j) || j.controller.signal.aborted) throw Object.assign(new Error('cancelled'), { code: 'cancelled' });
           if (!attemptId && this.service.hasPendingNarrative(j.storyId)) throw Object.assign(new Error('deferred'), { code: 'deferred' });

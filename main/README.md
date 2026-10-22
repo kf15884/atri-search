@@ -1,3 +1,14 @@
+## 本次节奏优化 Beta
+
+这是 Atri 子项目，与 [HDS-Interlude](https://github.com/ISEKAI-MomoiCore/HDS-Interlude) 协同，沿用原人设与剧情，不重建故事、不清理原数据。完整部署以整包 README.md 为准。
+
+- 保留正式提交后搜索、浏览器优先/API兜底、最近20条实际查询的现有规则。
+- 暂停、前台叙事与原生待发分段都会让位；不新增主叙事模型调用。
+- 只限制插件自己新增的观察条数，不截掉HDS传入的既有网页证据。
+- 第二台浏览器服务无需升级，继续使用0.2.0-beta.1。
+
+---
+
 # Atri 浏览器主插件 0.2.0-beta.1
 
 Atri子项目，扩展[HDS-Interlude](https://github.com/ISEKAI-MomoiCore/HDS-Interlude)，非官方组件。**不修改HDS核心，不清库、不重建故事、不清除overlay。**

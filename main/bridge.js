@@ -20,7 +20,7 @@ function createBridge(ctx, c, engine, { now = Date.now } = {}) {
       const allow = engine.available() && !r.outputRecovery;
       const next = { ...r, story: { ...r.story, setting: { ...r.story.setting, world: (r.story.setting?.world || '') + '\n\n' + L.guide(c, allow) } },
         writingOptions: { ...r.writingOptions, browserMode: 'disabled' },
-        webContext: [...(r.webContext || []), ...observations].slice(-8),
+        webContext: [...(r.webContext || []), ...observations.slice(-8)],
         contractFeatures: r.contractFeatures ? { ...r.contractFeatures, webObservation: true } : r.contractFeatures };
       const result = await base.decide.call(base, next);
       if (!result || typeof result !== 'object' || !Array.isArray(result.memories)) return result;
