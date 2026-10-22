@@ -1,0 +1,6 @@
+{
+  "version": "0.2.0-beta.1",
+  "runtime_package_unchanged": true,
+  "changes": "Public repository docs and release notes; original reviewed runtime tgz and deployment ZIP retained unchanged.",
+  "upstream_hds": "https://github.com/ISEKAI-MomoiCore/HDS-Interlude"
+}

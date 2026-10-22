@@ -1,0 +1,21 @@
+'use strict';
+const{test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),os=require('node:os'),path=require('node:path');
+const{App}=require('koishi'),HTTP=require('@koishijs/plugin-http').default,SQLite=require('@koishijs/plugin-database-sqlite').default,HDS=require(process.env.ATRI_SEARCH_HDS_MODULE||'koishi-plugin-hds-interlude');
+const root=process.env.ATRI_SEARCH_MODULE||path.resolve(__dirname,'..'),Search=require(root),{BraveProvider}=require(path.join(root,'provider'));
+test('full installable plugin + real HDS '+HDS.version+': actual timer, persistence and evidence round-trip',{timeout:12000},async t=>{
+ const {RemoteProvider}=require(path.join(root,'remote'));t.mock.method(RemoteProvider.prototype,'browser',async()=>{throw Object.assign(Error('browser-unavailable'),{code:'browser-unavailable'})});
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'atri-search-package-')),app=new App();app.baseDir=dir;let calls=0;
+ t.mock.method(BraveProvider.prototype,'search',async function(q,o){await o.beforeSubmit();o.onSubmit();calls++;return[{url:'https://example.org/astronomy',title:'星云资料',excerpt:'搜索适配层实际返回的模拟摘要'}]});
+ app.plugin(HTTP,{});app.plugin(SQLite,{path:path.join(dir,'koishi.db')});
+ app.plugin(HDS,HDS.Config({storyDefaults:{characterName:'Atri',characterProfile:'原人设',world:'原世界'},runtime:{autoAdvanceEnabled:false,allowProactiveMessages:false},model:{providers:[]},memory:{enabled:false},onebot:{enabled:false},logging:{logScriptPreview:false}}));
+ const c=Search.Config({enabled:true,targetUserId:'OWNER_ACCOUNT',selfId:'BOT_ACCOUNT',apiKey:'TEST_ONLY_CREDENTIAL',browserUrl:'http://browser.invalid',browserToken:'TEST_ONLY_BROWSER_CREDENTIAL'});app.plugin(Search,c);
+ t.after(async()=>{await app.stop();fs.rmSync(dir,{recursive:true,force:true})});await app.start();await new Promise(r=>setTimeout(r,100));
+ const s=app.interlude,session={platform:'onebot',selfId:c.selfId,userId:c.targetUserId,channelId:`private:${c.targetUserId}`,username:'测试',isDirect:true},story=await s.createStory(session),participant=await s.ensureParticipant(story,session);
+ const narrator=s.getNarrator(),native=Object.getPrototypeOf(narrator),old=native.decide;let seen;
+ native.decide=async r=>{seen=r;return{script:'Atri准备查查天文资料。',interaction:{seen:true,reply:{mode:'immediate',content:'我去看看资料'}},memories:[{category:'atri-search',content:'查询：天文 星云形成',importance:0.2}]}};t.after(()=>native.decide=old);
+ const req={story,participant,participants:[participant],phase:'user-message',userMessage:'在想什么',webContext:[]},raw=await narrator.decide(req),now=new Date();
+ await s.serial(story.id,()=>s.persistDecision(story,participant,{intents:[],intentUpdates:[],followUpResolutions:[],...raw},now,now,true,'user-message',[]));assert.equal(calls,0);
+ const until=Date.now()+4000;while(calls===0&&Date.now()<until)await new Promise(r=>setTimeout(r,30));assert.equal(calls,1);await new Promise(r=>setTimeout(r,40));
+ const history=JSON.parse(fs.readFileSync(path.join(dir,'data/atri-search/history.json'),'utf8'));assert.deepEqual(history,['天文 星云形成']);
+ await narrator.decide(req);assert.equal(seen.webContext.length,1);assert.match(seen.webContext[0].title,/Atri搜索摘要/);assert.equal(req.webContext.length,0);
+});

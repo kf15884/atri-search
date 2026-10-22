@@ -1,0 +1,39 @@
+{
+  "name": "koishi-plugin-atri-search",
+  "version": "0.2.0-beta.1",
+  "description": "Atri子项目：第二台浏览器优先、API兜底，正式剧情提交后异步执行，保留HDS数据。",
+  "main": "index.js",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "peerDependencies": {
+    "koishi": "^4.18.0"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.cjs"
+  },
+  "files": [
+    "*.js",
+    "README.md",
+    "LICENSE",
+    "docs",
+    "scripts"
+  ],
+  "koishi": {
+    "description": {
+      "zh": "正式剧情提交后异步搜索；最近20条查询；HDS决定感想和分享。"
+    },
+    "service": {
+      "optional": [
+        "interlude"
+      ]
+    }
+  },
+  "devDependencies": {
+    "koishi": "4.18.11",
+    "@koishijs/plugin-http": "0.6.3",
+    "@koishijs/plugin-database-sqlite": "4.7.0",
+    "koishi-plugin-hds-interlude": "1.0.1-rc56"
+  }
+}

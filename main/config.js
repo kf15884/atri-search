@@ -1,0 +1,8 @@
+'use strict';
+const {Schema}=require('koishi');
+module.exports=Schema.intersect([
+ Schema.object({enabled:Schema.boolean().default(false),targetUserId:Schema.string().default('').description('请填写本人QQ'),selfId:Schema.string().default('').description('请填写机器人QQ'),platform:Schema.const('onebot').default('onebot')}).description('01 本人私聊范围'),
+ Schema.object({browserUrl:Schema.string().default('').description('请填写第二台WireGuard浏览器服务地址；不带/v1后缀'),browserToken:Schema.string().role('secret').default('').description('请填写独立浏览器服务Token'),browserTimeoutSec:Schema.natural().min(5).max(90).default(35)}).description('02 第二台浏览器优先'),
+ Schema.object({fallbackType:Schema.union(['disabled','deepseek-search','brave','custom-json']).default('brave'),fallbackUrl:Schema.string().default('').description('自定义HTTPS搜索端点；DeepSeek/Brave留空用官方端点；不是普通聊天接口'),fallbackKey:Schema.string().role('secret').default(''),apiKey:Schema.string().role('secret').default('').description('兼容旧0.1.0的Brave Key；新配置请用fallbackKey'),fallbackTimeoutSec:Schema.natural().min(3).max(60).default(20),resultLimit:Schema.natural().min(1).max(5).default(3)}).description('03 主服务器API兜底'),
+ Schema.object({interests:Schema.string().default('沿用HDS真实兴趣；不强制上网或分享'),blockedTerms:Schema.array(String).default([]),dailyLimit:Schema.natural().min(0).max(50).default(3).description('每天逻辑任务数；浏览器加API兜底共用一次任务额度'),gapMin:Schema.natural().min(1).max(1440).default(30),timezone:Schema.string().default('Asia/Shanghai'),timeoutSec:Schema.natural().min(10).max(180).default(90).description('整项任务总时限'),resultTtlMin:Schema.natural().min(5).max(120).default(60)}).description('04 异步节奏与隐私')
+]);
